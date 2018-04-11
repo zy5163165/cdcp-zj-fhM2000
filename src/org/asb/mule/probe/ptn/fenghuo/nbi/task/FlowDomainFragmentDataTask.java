@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.asb.mule.probe.framework.entity.FlowDomainFragment;
+import org.asb.mule.probe.framework.entity.IPCrossconnection;
 import org.asb.mule.probe.framework.nbi.task.CommonDataTask;
 import org.asb.mule.probe.framework.service.SqliteConn;
 import org.asb.mule.probe.framework.service.SqliteService;
@@ -27,6 +28,13 @@ public class FlowDomainFragmentDataTask extends CommonDataTask {
 			nbilog.info("FlowDomainFragment : " + fdrsList.size());
 			if (fdrsList != null && fdrsList.size() > 0) {
 				for (FlowDomainFragment fdrs : fdrsList) {
+					if ((!fdrs.getRate().equals("309")) && (!fdrs.getRate().equals("1500"))) {
+						List<IPCrossconnection> ccList = this.service.retrieveAllCrossconnections(fdrs.getDn());
+						for (IPCrossconnection ipc : ccList) {
+							getSqliteConn().insertBObject(ipc);
+						}
+					}
+					
 					getSqliteConn().insertBObject(fdrs);
 					fdrsVector.add(fdrs);
 				}

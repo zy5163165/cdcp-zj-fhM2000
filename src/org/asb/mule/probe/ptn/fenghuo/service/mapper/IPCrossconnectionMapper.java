@@ -5,9 +5,12 @@ import org.asb.mule.probe.framework.entity.IPCrossconnection;
 import org.asb.mule.probe.framework.service.Constant;
 import org.asb.mule.probe.framework.util.CodeTool;
 
+import com.alcatelsbell.nms.common.SysUtil;
+
 import subnetworkConnection.CrossConnect_T;
 
 import extendedFlowDomainMgr.ExMatrixFlowDomainFragment_T;
+import flowDomainFragment.MatrixFlowDomainFragment_T;
 import globaldefs.NameAndStringValue_T;
 
 public class IPCrossconnectionMapper extends CommonMapper
@@ -35,6 +38,25 @@ public class IPCrossconnectionMapper extends CommonMapper
 		cc.setzEnd(end2String(vendorEntity.zEnd));
 		cc.setaPtp(end2Ptp(vendorEntity.aEnd));
 		cc.setzPtp(end2Ptp(vendorEntity.zEnd));
+		cc.setActiveState(String.valueOf(vendorEntity.active));
+		cc.setTransmissionParams(mapperTransmissionPara(vendorEntity.transmissionParams));
+		cc.setAdditionalInfo(mapperAdditionalInfo(vendorEntity.additionalInfo));
+		return cc;
+	}
+	
+	public IPCrossconnection convertIPCrossConnection(MatrixFlowDomainFragment_T vendorEntity, String trafficTrunkName) {
+		IPCrossconnection cc = new IPCrossconnection();
+
+		cc.setDn(SysUtil.nextDN());
+		cc.setParentDn(trafficTrunkName);
+		String[] emsName = trafficTrunkName.split(Constant.dnSplit);
+		cc.setEmsName(emsName[0]);
+		cc.setDirection(mapperConnectionDirection(vendorEntity.direction));
+		cc.setCcType(vendorEntity.mfdfrType);
+		cc.setaEnd(nvs2dn(vendorEntity.aEnd));
+		cc.setzEnd(nvs2dn(vendorEntity.zEnd));
+		cc.setaPtp(nvs2dn(vendorEntity.aEnd));
+		cc.setzPtp(nvs2dn(vendorEntity.zEnd));
 		cc.setActiveState(String.valueOf(vendorEntity.active));
 		cc.setTransmissionParams(mapperTransmissionPara(vendorEntity.transmissionParams));
 		cc.setAdditionalInfo(mapperAdditionalInfo(vendorEntity.additionalInfo));

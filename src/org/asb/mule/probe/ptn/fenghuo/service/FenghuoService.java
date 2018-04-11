@@ -10,7 +10,9 @@ import extendedFlowDomainMgr.ExMatrixFlowDomainFragmentList_THolder;
 import extendedFlowDomainMgr.ExMatrixFlowDomainFragment_T;
 import extendedMLSNMgr.TNetworkProtectionGroup_T;
 import flowDomain.FlowDomain_T;
+import flowDomainFragment.FDFrRoute_THolder;
 import flowDomainFragment.FlowDomainFragment_T;
+import flowDomainFragment.MatrixFlowDomainFragment_T;
 import globaldefs.NameAndStringValue_T;
 import globaldefs.ProcessingFailureException;
 
@@ -850,8 +852,40 @@ public class FenghuoService implements NbiService {
 
 	@Override
 	public List<IPCrossconnection> retrieveAllCrossconnections(String neName) {
-		// TODO Auto-generated method stub
-		return null;
+	    List<IPCrossconnection> IPCrossconnectionList = new ArrayList<IPCrossconnection>();
+		MatrixFlowDomainFragment_T[] routes = null;
+		NameAndStringValue_T[] ttname = VendorDNFactory.createCommonDN(neName);
+		FDFrRoute_THolder routeHolder = new FDFrRoute_THolder();
+		long start = System.currentTimeMillis();
+		sbilog.debug("retrieveFdfrRoute :start " + neName);
+		try {
+			corbaService.getNmsSession().getFlowDomainMgr().getFDFrRoute(ttname, routeHolder);
+			routes = routeHolder.value;
+		} catch (ProcessingFailureException e) {
+			errorlog.error(neName + " retrieveFdfrRoute ProcessingFailureException: " + CodeTool.isoToGbk(e.errorReason), e);
+		} catch (org.omg.CORBA.SystemException e) {
+			errorlog.error(neName + " retrieveFdfrRoute CORBA.SystemException: " + e.getMessage(), e);
+		}
+		sbilog.debug("retrieveFdfrRoute :end " + neName);
+		long end = System.currentTimeMillis();
+		long sub = end - start;
+		sbilog.info("retrieveFdfrRoute : " + sub + "ms Tunnel: " + neName);
+		if (sub > 60000) {
+			sbilog.info("retrieveFdfrRoute1 : " + sub + "ms Tunnel: " + neName);
+		}
+		if (routes != null) {
+			for (MatrixFlowDomainFragment_T route : routes) {
+				try {
+					IPCrossconnection ipCC = IPCrossconnectionMapper.instance().convertIPCrossConnection(route, neName);
+					IPCrossconnectionList.add(ipCC);
+				} catch (Exception e) {
+					errorlog.error("retrieveRoute convertException: \nTunnel=" + neName + " \nroute=" + route, e);
+				}
+			}
+		}
+		sbilog.info("retrieveRoute : " + IPCrossconnectionList.size() + " Tunnel: " + neName);
+		return IPCrossconnectionList;
+	    
 	}
 
 	@Override
