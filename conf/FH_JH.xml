@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+    <bean id="U2000Bean"
+                 class="org.asb.mule.probe.ptn.fenghuo.sbi.service.CorbaService"
+                 init-method="init">
+        <property name="emsName" value="JH-OTNM2000-1-PTN" />
+        <!--
+            确定本地ORB是以ip还是主机名发布(jacorb.dns.enable,jacorb.ior_proxy_host,jacorb.ior_proxy_port)
+            on-主机名，off-ip
+        -->
+
+        <property name="namingServiceDns" value="off" />
+        <property name="namingServiceIp" value="10.212.51.80" />
+        <property name="corbaUrl"
+                         value="corbaloc:iiop:JHCS3F14:3075/NameService" />
+        <property name="corbaTree"
+                         value="WRI/EMS_1\/SESSIONFACTORY.SESSIONFACTORY" />
+        <property name="corbaUserName" value="corba3" />
+        <property name="corbaPassword" value="Corba3$zj123" />
+
+    </bean>
+
+    <bean id="nbiService"
+                 class="org.asb.mule.probe.ptn.fenghuo.service.FenghuoService">
+        <property name="corbaService" ref="U2000Bean" />
+        <property name="key" value="2000" />
+    </bean>
+
+    <bean id="stat" class="org.asb.mule.probe.ptn.fenghuo.FenghuoStat" >
+        <property name="fenghuoService" ref="nbiService"/>
+    </bean>
+
+</beans>
