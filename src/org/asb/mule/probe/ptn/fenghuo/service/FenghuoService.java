@@ -925,7 +925,7 @@ public class FenghuoService implements NbiService {
 		try {
 			
 			if (corbaService.getNmsSession().getTrailNtwProtMgr() == null) {
-				sbilog.info("retrieveAllTrailNtwProtection: getTrailNtwProtMgr is null");
+				sbilog.info("retrieveAllTrailNtwProtection: getTrailNtwProtMgr is null123");
 			} else {
 				sbilog.info("retrieveAllTrailNtwProtection: getTrailNtwProtMgr.class is --" + corbaService.getNmsSession().getTrailNtwProtMgr().getClass().toString());
 			}
