@@ -60,6 +60,7 @@ import org.asb.mule.probe.ptn.fenghuo.sbi.mgrhandler.ProtectionMgrHandler;
 
 import subnetworkConnection.*;
 import terminationPoint.TerminationPoint_T;
+import topologicalLink.TopologicalLinkIterator_IHolder;
 import topologicalLink.TopologicalLink_T;
 import trailNtwProtection.TrailNtwProtection_T;
 
@@ -1044,10 +1045,15 @@ public class FenghuoService implements NbiService {
 	public void retrieveRouteAndTopologicalLinks(String sncName, List<CrossConnect> ccList, List<Section> sectionList) {
 		subnetworkConnection.Route_THolder normalRoute = new subnetworkConnection.Route_THolder();
 		topologicalLink.TopologicalLinkList_THolder topologicalLinkList = new topologicalLink.TopologicalLinkList_THolder();
+		topologicalLink.TopologicalLinkIterator_IHolder tpLinkIt = new TopologicalLinkIterator_IHolder();
+		
 		String[] sncdns = sncName.split("@");
 		NameAndStringValue_T[] vendorSncName = VendorDNFactory.createSNCDN(sncdns[0].substring(4), sncdns[1].substring(21), sncdns[2].substring(21));
 		try {
-			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getRouteAndTopologicalLinks(vendorSncName, normalRoute, topologicalLinkList);
+//			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getRouteAndTopologicalLinks(vendorSncName, normalRoute, topologicalLinkList);
+			
+			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getRoute(vendorSncName, true, normalRoute);
+			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getAllTopologicalLinks(vendorSncName, 4000, topologicalLinkList, tpLinkIt);
 
 		} catch (ProcessingFailureException e) {
 			errorlog.error("retrieveRouteAndTopologicalLinks ProcessingFailureException: " + CodeTool.IsoToUtf8(e.errorReason), e);
