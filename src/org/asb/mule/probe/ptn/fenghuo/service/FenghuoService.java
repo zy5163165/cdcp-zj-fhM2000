@@ -1051,8 +1051,13 @@ public class FenghuoService implements NbiService {
 		NameAndStringValue_T[] vendorSncName = VendorDNFactory.createSNCDN(sncdns[0].substring(4), sncdns[1].substring(21), sncdns[2].substring(21));
 		try {
 //			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getRouteAndTopologicalLinks(vendorSncName, normalRoute, topologicalLinkList);
+			boolean includeHigherOrderCCs = true;
+			if ("ZJ-FH-1-OTN".equals(corbaService.getEmsDn())) {
+				includeHigherOrderCCs = false;
+				sbilog.info("retrieveRouteAndTopologicalLinks includeHigherOrderCCs: " + includeHigherOrderCCs);
+			}
 			
-			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getRoute(vendorSncName, true, normalRoute);
+			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getRoute(vendorSncName, includeHigherOrderCCs, normalRoute);
 			corbaService.getNmsSession().getMultiLayerSubnetworkMgr().getAllTopologicalLinks(vendorSncName, 4000, topologicalLinkList, tpLinkIt);
 
 		} catch (ProcessingFailureException e) {
