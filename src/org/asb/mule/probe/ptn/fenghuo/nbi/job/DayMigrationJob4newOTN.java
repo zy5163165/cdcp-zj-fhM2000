@@ -103,7 +103,8 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 
         nbilog.info("db: " + dbName);
         try {
-            String date = StringUtils.substringBetween(serial, "@", "-");
+//            String date = StringUtils.substringBetween(serial, "@", "-");
+        	String date = new SimpleDateFormat("YYYYMMdd").format(System.currentTimeMillis());
         	String ipAddress = "";
         	String ftpPath = "";
         	String user = "";
@@ -123,12 +124,12 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         	
         	SimpleDateFormat df = new SimpleDateFormat("HH");
 			String timeStamp = date + "0000";
-			if (Integer.parseInt(df.format(System.currentTimeMillis())) > 12) {
-				// 过了12点，属于下午的采集
+			if (Integer.parseInt(df.format(System.currentTimeMillis())) > 13) {
+				// 过了13点，属于下午的采集
 				timeStamp = date + "1200";
 				xmlPath = xmlPath + "-pm/";
 			} else {
-				// 没过12点，属于上午的采集
+				// 没过13点，属于上午的采集
 				xmlPath = xmlPath + "-am/";
 			}
         	
@@ -144,9 +145,16 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         	clearPath(gzPath, timeStamp);
         	clearPath(xmlPath, timeStamp);
         	
+        	nbilog.info("downloadFromFtp : start...");
         	downloadFromFtp(ipAddress, user, passwd, ftpPath, gzPath, timeStamp); // 从ftp下载压缩包gz
+        	
+        	nbilog.info("decompressionGz : start...");
         	decomGz(gzPath, xmlPath, timeStamp); // 解压压缩包gz得到xml文件
+        	
+        	nbilog.info("transXml : start...");
     		transXml(xmlPath, dbName); // 解析xml文件
+    		
+    		nbilog.info("transXml : end...");
             
             queryCount();
             eds = SummaryUtil.geyEDS(serial, sqliteConn, service.getEmsName(), dbName);
@@ -195,7 +203,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
     
 	private void downloadFromFtp(String ipAddress, String user, String passwd, String ftpPath, String gzPath, String timeStamp) {
 		// ftp服务器登录凭证
-		int port = 22;
+		int port = 21;
 		FTPClient ftp = null;
 		try {
 			// ftp的数据下载
@@ -222,12 +230,12 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 
 			// 检索ftp目录下所有的文件，利用时间字符串进行过滤
 			boolean dir = ftp.changeWorkingDirectory(ftpPath);
+			nbilog.info("dir: " + dir);
 			if (dir) {
 				FTPFile[] fs = ftp.listFiles();
 				for (FTPFile f : fs) {
-					nbilog.info("f.name: " + f.getName());
 					if(f.getName().indexOf(timeStamp)>0) {
-						System.out.println(new Date() + "  ftpDownload定时器下载xml成功");
+						nbilog.info(f.getName() + "  ftpDownload下载xml成功");
 						File localFile = new File(gzPath + f.getName());
 						OutputStream ios = new FileOutputStream(localFile);
 						ftp.retrieveFile(f.getName(), ios);
@@ -236,6 +244,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 				}
 			}
 		} catch (Exception e) {
+			nbilog.error(e, e);
 			e.printStackTrace();
 			System.out.println(new Date() + "  ftp下载xml文件发生错误");
 		} finally {
@@ -243,6 +252,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 				try {
 					ftp.disconnect();
 				} catch (IOException ioe) {
+					nbilog.error(ioe, ioe);
 				}
 			}
 		}
@@ -284,6 +294,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         	
             
         } catch (Exception ex){  
+        	nbilog.error(ex, ex);
             System.err.println(ex.toString());  
         }  
         return;
@@ -333,27 +344,27 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
             try {
                 JPASupport jpaSupport = sqliteConn.getJpaSupport();
                 HashMap<String,String> sqls = new HashMap<String, String>();
-                sqls.put("ONE:","SELECT count(0) FROM ONE ");
-                sqls.put("OMC:","SELECT count(0) FROM OMC ");
-                sqls.put("NEL:","SELECT count(0) FROM NEL ");
-                sqls.put("EQH:","SELECT count(0) FROM EQH ");
-                sqls.put("CRD:","SELECT count(0) FROM CRD ");
-                sqls.put("PRT:","SELECT count(0) FROM PRT ");
-                sqls.put("CTP:","SELECT count(0) FROM CTP ");
-                sqls.put("TPL:","SELECT count(0) FROM TPL ");
-                sqls.put("SIF:","SELECT count(0) FROM SIF ");
-                sqls.put("EPG:","SELECT count(0) FROM EPG ");
-                sqls.put("EPU:","SELECT count(0) FROM EPU ");
-                sqls.put("PTG:","SELECT count(0) FROM PTG ");
-                sqls.put("PGU:","SELECT count(0) FROM PGU ");
-                sqls.put("SBN:","SELECT count(0) FROM SBN ");
-                sqls.put("SNN:","SELECT count(0) FROM SNN ");
-                sqls.put("SNL:","SELECT count(0) FROM SNL ");
-                sqls.put("SNT:","SELECT count(0) FROM SNT ");
-                sqls.put("SNR:","SELECT count(0) FROM SNR ");
+                sqls.put("ONE:","SELECT count(rmuid) FROM ONE ");
+                sqls.put("OMC:","SELECT count(rmuid) FROM OMC ");
+                sqls.put("NEL:","SELECT count(rmuid) FROM NEL ");
+                sqls.put("EQH:","SELECT count(rmuid) FROM EQH ");
+                sqls.put("CRD:","SELECT count(rmuid) FROM CRD ");
+                sqls.put("PRT:","SELECT count(rmuid) FROM PRT ");
+                sqls.put("CTP:","SELECT count(rmuid) FROM CTP ");
+                sqls.put("TPL:","SELECT count(rmuid) FROM TPL ");
+                sqls.put("SIF:","SELECT count(rmuid) FROM SIF ");
+                sqls.put("EPG:","SELECT count(rmuid) FROM EPG ");
+                sqls.put("EPU:","SELECT count(rmuid) FROM EPU ");
+                sqls.put("PTG:","SELECT count(rmuid) FROM PTG ");
+                sqls.put("PGU:","SELECT count(rmuid) FROM PGU ");
+                sqls.put("SBN:","SELECT count(rmuid) FROM SBN ");
+                sqls.put("SNN:","SELECT count(rmuid) FROM SNN ");
+                sqls.put("SNL:","SELECT count(rmuid) FROM SNL ");
+                sqls.put("SNT:","SELECT count(rmuid) FROM SNT ");
+                sqls.put("SNR:","SELECT count(rmuid) FROM SNR ");
                 
-                sqls.put("ptp:","SELECT count(0) FROM PRT prt WHERE prt.physicalOrLogical='ptp' ");
-                sqls.put("ftp:","SELECT count(0) FROM PRT prt WHERE prt.physicalOrLogical='ftp' ");
+                sqls.put("ptp:","SELECT count(rmuid) FROM PRT prt WHERE prt.physicalOrLogical='ptp' ");
+                sqls.put("ftp:","SELECT count(rmuid) FROM PRT prt WHERE prt.physicalOrLogical='ftp' ");
                 
 
                 Set<String> keySet = sqls.keySet();
@@ -429,7 +440,6 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 			}
 			
 			sqliteConn.waitingForInsertBObject();
-			sqliteConn.release();
 			
 			System.out.println("trans finished...");
 			
@@ -636,6 +646,8 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 		job.clearPath(xmlPath, timeStamp);
 		job.decomGz(gzPath, xmlPath, timeStamp);
 		job.transXml(xmlPath, dbName);
+		
+		job.sqliteConn.release();
 
 		long t2 = System.currentTimeMillis();
 		long t = (t2 - t1) / (3600000l);
