@@ -42,6 +42,9 @@ public class TopoNodeMapper extends CommonMapper {
 		// EMS:SHX-OTNM2000-1-PTN@ManagedElement:134217729;66561
 		String nedn = nv2dn(nename);
 		String neblockid = nedn.substring(nedn.indexOf(";") + 1);
+		if (!nedn.contains(";")) {
+			neblockid = "0";
+		}
 		int neblock = -1;
 		if (Integer.parseInt(neblockid) >= 2162689) {
 			String temp = Integer.toBinaryString(Integer.parseInt(neblockid) >> 8);
@@ -78,6 +81,9 @@ public class TopoNodeMapper extends CommonMapper {
 		String nedn = "EMS:JH-OTNM2000-1-PTN@ManagedElement:134222630;2188319";
 		//String nedn = "EMS:JH-OTNM2000-1-PTN@ManagedElement:134219166;91143";
 		String neblockid = nedn.substring(nedn.indexOf(";") + 1);
+		if (!nedn.contains(";")) {
+			neblockid = "0";
+		}
 
 		if (Integer.parseInt(neblockid) >= 2162689) {
 			System.out.println("111 full="+ Integer.toBinaryString(Integer.parseInt(neblockid)));
