@@ -124,12 +124,12 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         	
         	SimpleDateFormat df = new SimpleDateFormat("HH");
 			String timeStamp = date + "0000";
-			if (Integer.parseInt(df.format(System.currentTimeMillis())) > 13) {
-				// 过了13点，属于下午的采集
+			if (Integer.parseInt(df.format(System.currentTimeMillis())) > 12) {
+				// 过了12点，属于下午的采集
 				timeStamp = date + "1200";
 				xmlPath = xmlPath + "-pm/";
 			} else {
-				// 没过13点，属于上午的采集
+				// 没过12点，属于上午的采集
 				xmlPath = xmlPath + "-am/";
 			}
         	
@@ -157,7 +157,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
     		nbilog.info("transXml : end...");
             
             queryCount();
-            eds = SummaryUtil.geyEDS(serial, sqliteConn, service.getEmsName(), dbName);
+//            eds = SummaryUtil.geyEDS(serial, sqliteConn, service.getEmsName(), dbName);
             sqliteConn.release();
             nbilog.info("End to migrate all data from ems.");
         } catch (Exception e) {
@@ -350,7 +350,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
                 sqls.put("EQH:","SELECT count(rmuid) FROM EQH ");
                 sqls.put("CRD:","SELECT count(rmuid) FROM CRD ");
                 sqls.put("PRT:","SELECT count(rmuid) FROM PRT ");
-                sqls.put("CTP:","SELECT count(rmuid) FROM CTP ");
+                sqls.put("CTP:","SELECT count(rmuid) FROM CTP2 ");
                 sqls.put("TPL:","SELECT count(rmuid) FROM TPL ");
                 sqls.put("SIF:","SELECT count(rmuid) FROM SIF ");
                 sqls.put("EPG:","SELECT count(rmuid) FROM EPG ");
