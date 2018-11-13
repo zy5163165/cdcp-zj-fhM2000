@@ -114,7 +114,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         	nbilog.info("emsdn: " + service.getEmsName());
         	nbilog.info("emsdnRemoveEnd: " + emsdnRemoveEnd);
         	if ("ZJ-FH-1-OTN".equals(emsdnRemoveEnd)) {
-        		ipAddress = "10.70.121.163";
+        		ipAddress = "10.76.135.226";
             	ftpPath = "ZJ/CS/FH/ZJ-FH-1-OTN/CM/" + date + "/";
             	user = "admin";
             	passwd = "admin";

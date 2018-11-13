@@ -603,6 +603,7 @@ public class FenghuoService implements NbiService {
 			errorlog.error("retrieveAllManagedElements CORBA.SystemException: " + e.getMessage(), e);
 		}
 		if (vendorSectionList != null) {
+			sbilog.info("retrieveAllSections.vendorSectionList : " + vendorSectionList.length);
 			for (TopologicalLink_T vendorSection : vendorSectionList) {
 				try {
 					if (vneID.contains(vendorSection.aEndTP[1].value) || vneID.contains(vendorSection.zEndTP[1].value)) {
@@ -1131,9 +1132,9 @@ public class FenghuoService implements NbiService {
 			// }
 			vendorCCs = ManagedElementMgrHandler.instance().retrieveAllCrossConnections(corbaService.getNmsSession().getManagedElementMgr(), neDn, layer);
 		} catch (ProcessingFailureException e) {
-			errorlog.error("retrieveAllCrossConnects ProcessingFailureException: " + CodeTool.isoToGbk(e.errorReason), e);
+			errorlog.error("retrieveAllCrossConnects ProcessingFailureException: " + neName + "--" + CodeTool.isoToGbk(e.errorReason), e);
 		} catch (org.omg.CORBA.SystemException e) {
-			errorlog.error("retrieveAllCrossConnects CORBA.SystemException: " + e.getMessage(), e);
+			errorlog.error("retrieveAllCrossConnects CORBA.SystemException: " + neName + "--" + e.getMessage(), e);
 		}
 		if (vendorCCs != null) {
 			for (CrossConnect_T vendorIPCc : vendorCCs) {
@@ -1141,7 +1142,7 @@ public class FenghuoService implements NbiService {
 					CrossConnect ipCC = IPCrossconnectionMapper.instance().convertCrossConnection(vendorIPCc, neName);
 					ccList.add(ipCC);
 				} catch (Exception e) {
-					errorlog.error("retrieveAllCrossConnects convertException: ", e);
+					errorlog.error("retrieveAllCrossConnects convertException: " + neName + "--", e);
 				}
 			}
 		}
