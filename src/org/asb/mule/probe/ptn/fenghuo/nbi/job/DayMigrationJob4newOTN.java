@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
@@ -123,10 +124,10 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         	String xmlPath = "/home/emsptn/ftpDownload/xml/" + service.getEmsName() + "/" + date; // xml文件路径
         	
         	SimpleDateFormat df = new SimpleDateFormat("HH");
-			String timeStamp = date + "0000";
+			String timeStamp = date + "00";
 			if (Integer.parseInt(df.format(System.currentTimeMillis())) > 12) {
 				// 过了12点，属于下午的采集
-				timeStamp = date + "1200";
+				timeStamp = date + "12";
 				xmlPath = xmlPath + "-pm/";
 			} else {
 				// 没过12点，属于上午的采集
@@ -619,6 +620,8 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 	public static void main(String[] args) {
 
 		String emsDn = "ZJ-FH-1-OTN";
+		StringUtils.split(emsDn, "-");
+		ArrayUtils.indexOf(StringUtils.split(emsDn, "-"), "OTN");
 		String date = "20180726";
 		long t1 = System.currentTimeMillis();
 		
