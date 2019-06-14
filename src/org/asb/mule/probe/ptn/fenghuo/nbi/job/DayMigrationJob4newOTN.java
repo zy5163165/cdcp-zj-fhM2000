@@ -118,7 +118,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         		ipAddress = "10.76.135.226";
             	ftpPath = "ZJ/CS/FH/ZJ-FH-1-OTN/CM/" + date + "/";
             	user = "admin";
-            	passwd = "admin";
+            	passwd = "Wgzyc#@2017w";
         	}
         	String gzPath = "/home/emsptn/ftpDownload/gz/" + service.getEmsName() + "/" + date + "/"; // gz压缩包路径
         	String xmlPath = "/home/emsptn/ftpDownload/xml/" + service.getEmsName() + "/" + date; // xml文件路径
