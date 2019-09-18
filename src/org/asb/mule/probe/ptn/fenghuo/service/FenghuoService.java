@@ -797,7 +797,7 @@ public class FenghuoService implements NbiService {
 		NameAndStringValue_T[] ttname = VendorDNFactory.createCommonDN(trafficTrunkName);
 		ExMatrixFlowDomainFragmentList_THolder routeHolder = new ExMatrixFlowDomainFragmentList_THolder();
 		long start = System.currentTimeMillis();
-		sbilog.debug("retrieveRoute :start " + trafficTrunkName);
+//		sbilog.debug("retrieveRoute :start " + trafficTrunkName);
 		try {
 			corbaService.getNmsSession().getExtendFlowDomainMgr().getExFDFrRoute(ttname, routeHolder);
 			routes = routeHolder.value;
@@ -806,10 +806,10 @@ public class FenghuoService implements NbiService {
 		} catch (org.omg.CORBA.SystemException e) {
 			errorlog.error(trafficTrunkName + " retrieveRoute CORBA.SystemException: " + e.getMessage(), e);
 		}
-		sbilog.debug("retrieveRoute :end " + trafficTrunkName);
+//		sbilog.debug("retrieveRoute :end " + trafficTrunkName);
 		long end = System.currentTimeMillis();
 		long sub = end - start;
-		sbilog.info("retrieveRoute : " + sub + "ms Tunnel: " + trafficTrunkName);
+//		sbilog.info("retrieveRoute : " + sub + "ms Tunnel: " + trafficTrunkName);
 		if (sub > 60000) {
 			sbilog.info("retrieveRoute1 : " + sub + "ms Tunnel: " + trafficTrunkName);
 		}
@@ -859,7 +859,7 @@ public class FenghuoService implements NbiService {
 		NameAndStringValue_T[] ttname = VendorDNFactory.createCommonDN(neName);
 		FDFrRoute_THolder routeHolder = new FDFrRoute_THolder();
 		long start = System.currentTimeMillis();
-		sbilog.debug("retrieveFdfrRoute :start " + neName);
+//		sbilog.debug("retrieveFdfrRoute :start " + neName);
 		try {
 			corbaService.getNmsSession().getFlowDomainMgr().getFDFrRoute(ttname, routeHolder);
 			routes = routeHolder.value;
@@ -868,10 +868,10 @@ public class FenghuoService implements NbiService {
 		} catch (org.omg.CORBA.SystemException e) {
 			errorlog.error(neName + " retrieveFdfrRoute CORBA.SystemException: " + e.getMessage(), e);
 		}
-		sbilog.debug("retrieveFdfrRoute :end " + neName);
+//		sbilog.debug("retrieveFdfrRoute :end " + neName);
 		long end = System.currentTimeMillis();
 		long sub = end - start;
-		sbilog.info("retrieveFdfrRoute : " + sub + "ms Tunnel: " + neName);
+//		sbilog.info("retrieveFdfrRoute : " + sub + "ms Tunnel: " + neName);
 		if (sub > 60000) {
 			sbilog.info("retrieveFdfrRoute1 : " + sub + "ms Tunnel: " + neName);
 		}
@@ -881,11 +881,11 @@ public class FenghuoService implements NbiService {
 					IPCrossconnection ipCC = IPCrossconnectionMapper.instance().convertIPCrossConnection(route, neName);
 					IPCrossconnectionList.add(ipCC);
 				} catch (Exception e) {
-					errorlog.error("retrieveRoute convertException: \nTunnel=" + neName + " \nroute=" + route, e);
+					errorlog.error("retrieveFdfrRoute1 convertException: \nTunnel=" + neName + " \nroute=" + route, e);
 				}
 			}
 		}
-		sbilog.info("retrieveRoute : " + IPCrossconnectionList.size() + " Tunnel: " + neName);
+		sbilog.info("retrieveFdfrRoute1 : " + IPCrossconnectionList.size() + " Tunnel: " + neName);
 		return IPCrossconnectionList;
 	    
 	}
