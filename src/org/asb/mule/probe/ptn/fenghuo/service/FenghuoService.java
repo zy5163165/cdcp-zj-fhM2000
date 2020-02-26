@@ -182,7 +182,7 @@ public class FenghuoService implements NbiService {
 					try {
 						neblockdn = TopoNodeMapper.instance().getNeblockdn(vendorNe.name);
 					} catch (Exception e) {
-						errorlog.error(e, e);
+						errorlog.error(TopoNodeMapper.instance().nv2dn(vendorNe.name), e);
 					}
 					if (neblockdn != null) {
 						neblockMap.put(neblockdn, CodeTool.isoToGbk(vendorNe.nativeEMSName).split("_")[0]);
