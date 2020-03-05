@@ -3,3 +3,4 @@
 /log4j.properties
 /mule-config.xml
 /org/
+*.class
