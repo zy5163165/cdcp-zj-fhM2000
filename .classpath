@@ -76,6 +76,6 @@
 	<classpathentry kind="lib" path="/probe/common_lib/slf4j-log4j12-1.5.11.jar"/>
 	<classpathentry kind="lib" path="/probe/common_lib/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="lib" path="/probe/common_lib/wrapper-3.1.0.jar"/>
-	<classpathentry kind="lib" path="C:/02WorkSpace/cdcp/PTN-FH-OTNM/lib/fenghuoIdl.jar"/>
+	<classpathentry kind="lib" path="lib/fenghuoIdl.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
