@@ -1,21 +1,18 @@
 package org.asb.mule.probe.ptn.fenghuo;
 
-import com.alcatelsbell.cdcp.nodefx.CorbaEmsAdapterTemplate;
-import com.alcatelsbell.nms.valueobject.CdcpDictionary;
-import com.alcatelsbell.nms.valueobject.sys.Ems;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Map;
+
 import org.asb.mule.probe.framework.service.CorbaSbiService;
 import org.asb.mule.probe.framework.service.NbiService;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob;
-import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob4newOTN;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob4SDH;
+import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob4newOTN;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DeviceJob;
 import org.asb.mule.probe.ptn.fenghuo.sbi.service.CorbaService;
 import org.asb.mule.probe.ptn.fenghuo.service.FenghuoService;
 
-import java.util.Calendar;
-import java.util.Map;
+import com.alcatelsbell.cdcp.nodefx.CorbaEmsAdapterTemplate;
+import com.alcatelsbell.nms.valueobject.sys.Ems;
 
 /**
  * Author: Ronnie.Chen
@@ -54,7 +51,8 @@ public class FenghuoEmsAdatperV2   extends CorbaEmsAdapterTemplate {
             job.execute();
         }
         // omc新接口SDH/OTN
-        else if (ems.getTag1().equals("NewSDH") || ems.getTag1().equals("NewOTN") || ems.getTag1().equals("NewDWDM")) {
+        else if (ems.getTag1().equals("NewSDH") || ems.getTag1().equals("NewOTN")
+        		 || ems.getTag1().equals("NewPTN")|| ems.getTag1().equals("NewSPN")) {
 
         	DayMigrationJob4newOTN job = new DayMigrationJob4newOTN();
         	job.logical = logical;
