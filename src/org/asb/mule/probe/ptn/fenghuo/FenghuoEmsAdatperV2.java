@@ -6,6 +6,7 @@ import org.asb.mule.probe.framework.service.CorbaSbiService;
 import org.asb.mule.probe.framework.service.NbiService;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob4SDH;
+import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob4SPN;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DayMigrationJob4newOTN;
 import org.asb.mule.probe.ptn.fenghuo.nbi.job.DeviceJob;
 import org.asb.mule.probe.ptn.fenghuo.sbi.service.CorbaService;
@@ -52,9 +53,17 @@ public class FenghuoEmsAdatperV2   extends CorbaEmsAdapterTemplate {
         }
         // omc新接口SDH/OTN
         else if (ems.getTag1().equals("NewSDH") || ems.getTag1().equals("NewOTN")
-        		 || ems.getTag1().equals("NewPTN")|| ems.getTag1().equals("NewSPN")) {
+        		 || ems.getTag1().equals("NewPTN")) {
 
         	DayMigrationJob4newOTN job = new DayMigrationJob4newOTN();
+        	job.logical = logical;
+        	job.setService(AluService);
+        	job.setSerial(_serial);
+        	job.execute();
+        }
+     // omc新接口SPN
+        else if (ems.getTag1().equals("NewSPN")) {
+        	DayMigrationJob4SPN job = new DayMigrationJob4SPN();
         	job.logical = logical;
         	job.setService(AluService);
         	job.setSerial(_serial);
