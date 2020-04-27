@@ -53,7 +53,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.quartz.JobExecutionContext;
 
-import com.alcatelsbell.cdcp.domain.SummaryUtil;
 import com.alcatelsbell.cdcp.nodefx.FtpInfo;
 import com.alcatelsbell.cdcp.nodefx.FtpUtil;
 import com.alcatelsbell.cdcp.nodefx.MessageUtil;
@@ -423,19 +422,26 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 			// "D:\\20180705\\CM-OTN-CRD-A1-V1.0.0-20180705120024.xml"
 			for (String key : map.keySet()) {
 //				String filePath = path + "CM-OTN-" + key + "-A1-V1.0.0-20180705120024.xml"; // 写死的拼装文件名
-				String fileName = getFileName(key, path); // xml文件名模糊匹配
-				if (!Detect.notEmpty(fileName)) {
+//				String fileName = getFileName(key, path);
+				String[] fileNames = getFileNames(key, path); // xml文件名模糊匹配
+				if (!Detect.notEmpty(fileNames)) {
 					nbilog.error("实体："+key+"的xml文件未找到，请检查！");
 					continue;
 				}
-				String filePath = path + fileName;
-				
-				File inputXml = new File(filePath);
-				SAXReader saxReader = new SAXReader();
-				Document document = saxReader.read(inputXml);
-				List<BObject> objs = getObject(document, map.get(key).getClass());
-				for (BObject obj : objs) {
-					sqliteConn.insertBObject(obj);
+				if (fileNames.length > 1) {
+					nbilog.info("实体："+key+"的xml文件不止一个，共" + fileNames.length + "个！");
+				}
+				for (String fileName : fileNames) {
+					String filePath = path + fileName;
+					
+					File inputXml = new File(filePath);
+					SAXReader saxReader = new SAXReader();
+					Document document = saxReader.read(inputXml);
+					List<BObject> objs = getObject(document, map.get(key).getClass());
+					for (BObject obj : objs) {
+						sqliteConn.insertBObject(obj);
+					}
+					sqliteConn.waitingForInsertBObject();
 				}
 				sqliteConn.waitingForInsertBObject();
 			}
@@ -603,18 +609,19 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
 	 * @param path
 	 * @return
 	 */
-	public String getFileName(String key, String path) {
+	public String[] getFileNames(String key, String path) {
+		String[] fileNames = new String[]{};
 		String fileName = "";
 		File file = new File(path);
 		File[] tempFile = file.listFiles();
 		for (int i = 0; i < tempFile.length; i++) {
 			if (StringUtils.contains(tempFile[i].getName(), key)) {
 				fileName = tempFile[i].getName();
-				break;
+				fileNames = org.springframework.util.StringUtils.addStringToArray(fileNames, fileName);
 			}
 		}
 
-		return fileName;
+		return fileNames;
 	}
 	
 	public static void main(String[] args) {
