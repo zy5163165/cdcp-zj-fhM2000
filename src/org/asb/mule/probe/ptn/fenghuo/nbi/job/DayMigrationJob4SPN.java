@@ -97,7 +97,7 @@ import com.alcatelsbell.nms.util.SysProperty;
 import com.alcatelsbell.nms.valueobject.BObject;
 
 /**
- * 中兴SPN，OMC接口
+ * 烽火SPN，OMC接口
  * Author: Zongyu
  * Date: 2020
  * zongyu@shsinceretech.com
@@ -216,7 +216,7 @@ public class DayMigrationJob4SPN  extends MigrateCommonJob implements CommandBea
         // message
         nbilog.info("Uploading file...");
         try {
-            FtpInfo ftpInfo = FtpUtil.uploadFile("SDH", "FH", emsDn, new File(dbName));
+            FtpInfo ftpInfo = FtpUtil.uploadFile("SPN", "FH", emsDn, new File(dbName));
             ftpInfo.getAttributes().put("logical",""+logical);
             nbilog.info("Uploading file to :"+ftpInfo);
             if (eds != null) {
