@@ -104,7 +104,7 @@ public class DayMigrationJob4newOTN  extends MigrateCommonJob implements Command
         nbilog.info("db: " + dbName);
         try {
 //            String date = StringUtils.substringBetween(serial, "@", "-");
-        	String date = new SimpleDateFormat("YYYYMMdd").format(System.currentTimeMillis());
+        	String date = new SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis());
         	String ipAddress = "";
         	String ftpPath = "";
         	String user = "";
